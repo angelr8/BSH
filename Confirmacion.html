@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Asistencia</title>
+    <style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+text-align:center;
+padding:40px;
+}
+
+.card{
+background:white;
+padding:30px;
+max-width:400px;
+margin:auto;
+border-radius:10px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+button{
+margin-top:15px;
+padding:12px;
+width:100%;
+background:#25D366;
+border:none;
+color:white;
+font-size:16px;
+}
+
+</style>
+</head>
+<body>
+    
+<div class="card">
+
+<h2>Confirmar Asistencia</h2>
+
+<form id="form">
+
+<input type="hidden" name="id" id="guestId">
+
+<label>Nombre</label>
+<input type="text" name="nombre" id="nombre" required>
+
+<label>¿Asistirás?</label>
+<select name="asistencia" required>
+<option value="">Seleccionar</option>
+<option value="Si">Sí asistiré</option>
+<option value="No">No asistiré</option>
+</select>
+
+<label>Acompañantes</label>
+<input type="number" name="acompanantes" min="0" max="5">
+
+<button type="submit">Confirmar</button>
+
+</form>
+
+<p id="msg"></p>
+
+</div>
+
+<script>
+
+const scriptURL="AQUI_URL_SCRIPT";
+
+const params = new URLSearchParams(window.location.search);
+const id=params.get("id");
+
+document.getElementById("guestId").value=id;
+
+// buscar invitado
+fetch(scriptURL+"?id="+id)
+.then(r=>r.json())
+.then(data=>{
+
+if(data.found){
+
+document.getElementById("nombre").value=data.nombre;
+document.getElementById("nombre").readOnly=true;
+
+}
+
+});
+
+// enviar formulario
+document.getElementById("form").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let formData=new FormData(this);
+
+fetch(scriptURL,{
+method:"POST",
+body:formData
+})
+.then(res=>res.text())
+.then(res=>{
+
+document.getElementById("msg").innerHTML="Gracias por confirmar 🎉";
+
+});
+
+});
+
+</script>    
+</body>
+</html>
